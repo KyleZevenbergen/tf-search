@@ -60,8 +60,6 @@ The following variables can be configured in HCP Terraform workspace variables:
 
 ## Usage
 
-### Method 1: HCP Terraform UI (Recommended)
-
 1. **Define queries in your configuration**:
    - Add `list` blocks to your Terraform configuration (already done in this demo)
    - Commit and push changes to your VCS repository
@@ -86,32 +84,10 @@ The following variables can be configured in HCP Terraform workspace variables:
    - Copy the generated `import` and `resource` blocks to your configuration
    - Apply the configuration to import resources
 
-### Method 2: Terraform CLI
-
-1. **Initialize Terraform**:
-   ```bash
-   terraform init
-   ```
-
-2. **Test the Query**:
-   ```bash
-   terraform query
-   ```
-
-3. **Generate Import Configuration**:
-   ```bash
-   terraform query -generate-config-out=generated.tf
-   ```
-
-4. **Import Resources**:
-   - Copy the generated configuration to your main.tf file
-   - Run `terraform apply` to import the resources
-
 ### Clean Up
 
 After importing, you can:
 - Remove the `import` blocks from your configuration (they're only needed once)
-- Delete the `generated.tf` file
 - Keep the `resource` blocks to manage the imported instances
 
 ## Query Configuration
@@ -143,7 +119,6 @@ This demo focuses on `aws_instance` resources. The bulk import feature also supp
 - **Resource Management**: HCP Terraform identifies resources managed by other workspaces when using Terraform v1.12+
 - **Query Results**: The query will show managed, unknown, and unmanaged resources
 - **Multiple Queries**: You can run queries multiple times through the HCP Terraform UI
-- **Generated Files**: When using CLI, delete `generated.tf` before regenerating it
 
 ## References
 
