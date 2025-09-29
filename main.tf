@@ -33,7 +33,6 @@ resource "aws_instance" "tagged_instances_0" {
   hibernation                          = false
   instance_initiated_shutdown_behavior = "stop"
   instance_type                        = "t3.micro"
-  ipv6_address_count                   = 0
   key_name                             = "pki_demo"
   monitoring                           = false
   placement_partition_number           = 0
