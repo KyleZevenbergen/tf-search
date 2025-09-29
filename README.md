@@ -42,6 +42,8 @@ This demo demonstrates how to use Terraform's bulk import functionality with HCP
 
 5. **Enable HCP Terraform agents (if using agents)**:
    - If you use HCP Terraform agents, enable the `query` operation when starting the agent pool
+6. **Set up a couple of instances outside of TF**
+   - You'll need to set up a few instances outside of this demo so TF search can find them
 
 ## Configuration Variables
 
