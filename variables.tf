@@ -22,7 +22,7 @@ variable "query_limit" {
 variable "environment_tags" {
   description = "Environment tags to filter instances by"
   type        = list(string)
-  default     = ["production", "staging", "development"]
+  default     = ["prod", "stage", "dev"]
 }
 
 variable "instance_types" {
