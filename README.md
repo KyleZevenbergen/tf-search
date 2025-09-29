@@ -23,6 +23,7 @@ This demo demonstrates how to use Terraform's bulk import functionality with HCP
 ## Setup
 
 1. **Enable Terraform v1.14.0-beta or newer**:
+   - Go into your HCP Terraform Organizational settings and enable the "Show Terraform pre-releases" option.
    - Go to your HCP Terraform workspace settings
    - Update the Terraform version to v1.14.0-beta or newer
    - This enables the **Search & Import** page
