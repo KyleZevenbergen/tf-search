@@ -15,7 +15,6 @@ provider "aws" {
 
 import {
   to       = aws_instance.tagged_instances_0
-  provider = aws
   identity = {
     account_id = "405454589939"
     id         = "i-014254373450aa9c9"
