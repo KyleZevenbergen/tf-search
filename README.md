@@ -1,15 +1,16 @@
 # Terraform Bulk Import Demo for HCP Terraform
 
-This demo demonstrates how to use Terraform's bulk import functionality with HCP Terraform to discover and import existing AWS instances.
+This demo demonstrates how to use Terraform's bulk import functionality with HCP Terraform to discover and import existing AWS instances using the **Search & Import** feature.
 
 ## Prerequisites
 
 - **HCP Terraform account** with appropriate permissions
-- **Terraform v1.12 or newer** (bulk import functionality is not available in older versions)
+- **Terraform v1.14.0-beta or newer** (required for the Search & Import page in HCP Terraform)
 - AWS credentials configured in HCP Terraform
 - AWS instances running in the us-east-1 region
+- **VCS-driven workspace** (recommended) or CLI-driven workspace
 
-**Note**: This demo requires Terraform v1.12+ for the `terraform query` command and works with HCP Terraform.
+**Note**: This feature is currently in beta. Do not use beta functionality in production environments.
 
 ## Files
 
@@ -21,17 +22,25 @@ This demo demonstrates how to use Terraform's bulk import functionality with HCP
 
 ## Setup
 
-1. **Connect to HCP Terraform via VCS**:
+1. **Enable Terraform v1.14.0-beta or newer**:
+   - Go to your HCP Terraform workspace settings
+   - Update the Terraform version to v1.14.0-beta or newer
+   - This enables the **Search & Import** page
+
+2. **Connect to HCP Terraform via VCS**:
    - Connect your repository to HCP Terraform using the VCS workflow
    - This will automatically sync your configuration files
 
-2. **Configure variables in HCP Terraform**:
+3. **Configure variables in HCP Terraform**:
    - Go to your HCP Terraform workspace settings
    - Set the required variables as workspace variables
 
-3. **Configure AWS credentials in HCP Terraform**:
+4. **Configure AWS credentials in HCP Terraform**:
    - Go to your HCP Terraform workspace settings
    - Add AWS credentials as environment variables or use AWS IAM roles
+
+5. **Enable HCP Terraform agents (if using agents)**:
+   - If you use HCP Terraform agents, enable the `query` operation when starting the agent pool
 
 ## Configuration Variables
 
@@ -51,61 +60,59 @@ The following variables can be configured in HCP Terraform workspace variables:
 
 ## Usage
 
-### 1. Initialize Terraform
+### Method 1: HCP Terraform UI (Recommended)
 
-```bash
-terraform init
-```
+1. **Define queries in your configuration**:
+   - Add `list` blocks to your Terraform configuration (already done in this demo)
+   - Commit and push changes to your VCS repository
 
-This will connect to your HCP Terraform workspace and download the AWS provider.
+2. **Run queries in HCP Terraform**:
+   - Log into HCP Terraform and navigate to your workspace
+   - Click **Search & Import** in the sidebar menu
+   - Click **New Query** to start a query
+   - HCP Terraform will load the results as the query progresses
 
-### 2. Test the Query
+3. **Review search results**:
+   - HCP Terraform shows management status for each resource:
+     - **Managed**: Resource is already managed by Terraform
+     - **Unknown**: Resource was applied by an older version
+     - **Unmanaged**: Resource is not managed by Terraform
+   - Use search bar and filters to sort and filter results
+   - Click on resources to view details
 
-First, test the query to see what instances would be discovered:
+4. **Generate and import code**:
+   - Select resources you want to import
+   - Click **Generate configuration**
+   - Copy the generated `import` and `resource` blocks to your configuration
+   - Apply the configuration to import resources
 
-```bash
-terraform query
-```
+### Method 2: Terraform CLI
 
-For JSON output:
-```bash
-terraform query -json
-```
+1. **Initialize Terraform**:
+   ```bash
+   terraform init
+   ```
 
-### 3. Generate Import Configuration
+2. **Test the Query**:
+   ```bash
+   terraform query
+   ```
 
-Generate the configuration file for importing discovered resources:
+3. **Generate Import Configuration**:
+   ```bash
+   terraform query -generate-config-out=generated.tf
+   ```
 
-```bash
-terraform query -generate-config-out=generated.tf
-```
+4. **Import Resources**:
+   - Copy the generated configuration to your main.tf file
+   - Run `terraform apply` to import the resources
 
-This will create a `generated.tf` file containing `resource` and `import` blocks for all discovered instances.
-
-### 4. Import Resources
-
-Copy the generated configuration to your main.tf file and run:
-
-```bash
-terraform apply
-```
-
-This will import the discovered AWS instances into your HCP Terraform state.
-
-### 5. Clean Up
+### Clean Up
 
 After importing, you can:
 - Remove the `import` blocks from your configuration (they're only needed once)
 - Delete the `generated.tf` file
 - Keep the `resource` blocks to manage the imported instances
-
-## HCP Terraform UI
-
-You can also run queries and import resources directly from the HCP Terraform UI:
-
-1. Upload your configuration files to your workspace
-2. Use the "Import existing resources" feature in the UI
-3. Follow the guided process to discover and import resources
 
 ## Query Configuration
 
@@ -128,8 +135,17 @@ This demo focuses on `aws_instance` resources. The bulk import feature also supp
 - `aws_cloudwatch_log_group`
 - `aws_iam_role`
 
-## Notes
+## Important Notes
 
-- Make sure you have appropriate AWS permissions to list EC2 instances
-- The query will only find instances that are not already managed by Terraform
-- You can run the query multiple times, but you'll need to delete `generated.tf` before regenerating it
+- **Beta Feature**: This feature is currently in beta. Do not use in production environments
+- **Terraform Version**: Requires Terraform v1.14.0-beta or newer for the Search & Import UI
+- **AWS Permissions**: Ensure you have appropriate AWS permissions to list EC2 instances
+- **Resource Management**: HCP Terraform identifies resources managed by other workspaces when using Terraform v1.12+
+- **Query Results**: The query will show managed, unknown, and unmanaged resources
+- **Multiple Queries**: You can run queries multiple times through the HCP Terraform UI
+- **Generated Files**: When using CLI, delete `generated.tf` before regenerating it
+
+## References
+
+- [HCP Terraform Import Documentation](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/import#requirements)
+- [Terraform Bulk Import Documentation](https://developer.hashicorp.com/terraform/language/v1.14.x/import/bulk)
