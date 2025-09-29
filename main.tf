@@ -13,7 +13,7 @@ provider "aws" {
 
 
 import {
-  to       = aws_instance.filtered_instances_0
+  to       = aws_instance.app1-dev
   provider = aws
   identity = {
     account_id = "405454589939"
