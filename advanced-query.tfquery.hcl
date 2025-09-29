@@ -1,24 +1,6 @@
 # Advanced query configuration for discovering AWS instances
 # This file demonstrates more sophisticated filtering and querying options
 
-# Query for instances with specific environment tags
-list "aws_instance" "tagged_instances" {
-  provider = aws
-  limit = var.query_limit
-  
-  config {
-    region = var.aws_region
-    filter {
-      name   = "tag:Environment"
-      values = var.environment_tags
-    }
-    filter {
-      name = "instance-state-name"
-      values = var.instance_state_filter
-    }
-  }
-}
-
 # Query for instances by instance type
 list "aws_instance" "large_instances" {
   provider = aws
